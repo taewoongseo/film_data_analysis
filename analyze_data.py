@@ -7,8 +7,34 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 
+#Year analysis
+def year(filename):
+    conn = sqlite3.connect(filename)
+    cur = conn.cursor()
+
+    cur.execute('SELECT Films.year FROM Films')
+    rows = cur.fetchall()
+    
+    year_lst = []
+    for row in rows:
+        year_lst.append(row[0])
+
+    year_d = {}
+    for yr in year_lst:
+        decade = str(yr)[:3] + '0s'
+        if decade not in year_d.keys():
+            year_d[decade] = 1
+        else:
+            year_d[decade] += 1
+
+    sorted_year_d = sorted(year_d, key = lambda k: year_d[k], reverse = True)
+    print('You seem to like films from the ' + sorted_year_d[0] + ' the most!')
+
+    return sorted_year_d
 
 
+
+#Runtime analysis
 def runtime(filename):
     conn = sqlite3.connect(filename)
     cur = conn.cursor()
@@ -35,4 +61,6 @@ def runtime(filename):
 
     plt.show()
 
-runtime('film_data.db')
+    return runtime_avg
+
+year('film_data.db')
