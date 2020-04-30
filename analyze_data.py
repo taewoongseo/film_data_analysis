@@ -63,4 +63,26 @@ def runtime(filename):
 
     return runtime_avg
 
-year('film_data.db')
+#genre_analysis
+def genres(filename):
+    conn = sqlite3.connect(filename)
+    cur = conn.cursor()
+
+    cur.execute('SELECT Films.genres FROM Films')
+    rows = cur.fetchall()
+    genre_d = {}
+    for row in rows:
+        genres = row[0].split(', ')
+        for genre in genres:
+            if genre not in genre_d.keys():
+                genre_d[genre] = 1 
+            else:
+                genre_d[genre] += 1
+    print(genre_d)
+
+    sorted_genre_d = sorted(genre_d, key = lambda k: genre_d[k], reverse = True)
+    print(sorted_genre_d[:3])
+
+
+#Running functions
+runtime('film_data.db')
