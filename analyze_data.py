@@ -33,7 +33,6 @@ def year(filename):
     return sorted_year_d
 
 
-
 #Runtime analysis
 def runtime(filename):
     conn = sqlite3.connect(filename)
@@ -63,6 +62,64 @@ def runtime(filename):
 
     return runtime_avg
 
+#director analysis
+def director(filename):
+    conn = sqlite3.connect(filename)
+    cur = conn.cursor()
+
+    cur.execute('SELECT Films.director FROM Films')
+    rows = cur.fetchall()
+    director_d = {}
+
+    for row in rows:
+        directors = row[0].split(', ')
+        for director in directors:
+            if director not in director_d.keys():
+                director_d[director] = 1
+            else:
+                director_d[director] += 1
+
+    sorted_director_tup = sorted(director_d.items(), key = lambda k: k[1], reverse = True)
+
+    for tup in sorted_director_tup:
+        if tup[1] > 1:
+            continue
+        else:
+            print("You like a wide variety of directors! We need more data to determine your favorite director.") 
+            exit()
+
+    print("Your favorite director is " + sorted_director_tup[0][0] + ". They made " + str(sorted_director_tup[0][1]) + " of your favorite movies!")    
+    return sorted_director_tup[0][0]
+
+#actor analysis
+def actors(filename):
+    conn = sqlite3.connect(filename)
+    cur = conn.cursor()
+
+    cur.execute('SELECT Films.actors FROM Films')
+    rows = cur.fetchall()
+    actor_d = {}
+
+    for row in rows:
+        actors = row[0].split(', ')
+        for actor in actors:
+            if actor not in actor_d.keys():
+                actor_d[actor] = 1
+            else:
+                actor_d[actor] += 1
+
+    sorted_actor_tup = sorted(actor_d.items(), key = lambda k: k[1], reverse = True)
+
+    for tup in sorted_actor_tup:
+        if tup[1] > 1:
+            continue
+        else:
+            print("You like a wide variety of actors! We need more data to determine your favorite actors.") 
+            exit()
+
+    print("Your favorite actor is " + sorted_actor_tup[0][0] + ". They appeared in " + str(sorted_actor_tup[0][1]) + " of your favorite movies!")    
+    return sorted_actor_tup[0][0]
+
 #genre_analysis
 def genres(filename):
     conn = sqlite3.connect(filename)
@@ -83,6 +140,56 @@ def genres(filename):
     sorted_genre_d = sorted(genre_d, key = lambda k: genre_d[k], reverse = True)
     print(sorted_genre_d[:3])
 
+def plot(filename):
+    conn = sqlite3.connect(filename)
+    cur = conn.cursor()
+
+    cur.execute('SELECT Films.plot FROM Films')
+    rows = cur.fetchall()
+
+    keyword_d = {}
+    for row in rows:
+        sentence = row[0]
+        keywords = sentence.split(" ")
+        for keyword in keywords:
+            keyword = keyword.strip(" ,.'")
+            if keyword not in keyword_d.keys():
+                keyword_d[keyword] = 1
+            else:
+                keyword_d[keyword] += 1
+    sorted_keyword_tup = sorted(keyword_d.items(), key = lambda k: k[1], reverse = True)
+    print(sorted_keyword_tup)
+    return sorted_keyword_tup
+
+
+def imdb_rating(filename):
+    conn = sqlite3.connect(filename)
+    cur = conn.cursor()
+
+    cur.execute('SELECT Films.imdb_rating FROM Films')
+    rows = cur.fetchall()
+    
+    tot = 0
+    for row in rows:
+        tot += row[0]
+
+    count = len(rows)
+    avg_rating = round((float(tot)/count), 1)
+    print("Your average film rating from IMDb is " + str(avg_rating))
+
+    rating_lst = []
+    for row in rows:
+        rating_lst.append(row[0])
+
+    num_bins = 10
+    plt.hist(rating_lst, num_bins, facecolor='red', alpha=0.5, rwidth=0.85)
+    plt.xlabel('IMDb Rating out of 10',fontsize=10)
+    plt.ylabel('Count',fontsize=10)
+    plt.title('IMDb Rating Distribution',fontsize=12)
+
+    plt.show()
+    
+    return avg_rating
 
 #Running functions
-runtime('film_data.db')
+plot('film_data.db')
