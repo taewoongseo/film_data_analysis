@@ -81,15 +81,12 @@ def director(filename):
 
     sorted_director_tup = sorted(director_d.items(), key = lambda k: k[1], reverse = True)
 
-    for tup in sorted_director_tup:
-        if tup[1] > 1:
-            continue
-        else:
-            print("You like a wide variety of directors! We need more data to determine your favorite director.") 
-            exit()
-
-    print("Your favorite director is " + sorted_director_tup[0][0] + ". They made " + str(sorted_director_tup[0][1]) + " of your favorite movies!")    
-    return sorted_director_tup[0][0]
+    if sorted_director_tup[0][1] == 1:
+        print("You like a wide variety of directors! We need more data to determine your favorite director.") 
+        exit()
+    else:
+        print("Your favorite director is " + sorted_director_tup[0][0] + ". They made " + str(sorted_director_tup[0][1]) + " of your favorite movies!")    
+        return sorted_director_tup[0][0]
 
 #actor analysis
 def actors(filename):
@@ -110,15 +107,12 @@ def actors(filename):
 
     sorted_actor_tup = sorted(actor_d.items(), key = lambda k: k[1], reverse = True)
 
-    for tup in sorted_actor_tup:
-        if tup[1] > 1:
-            continue
-        else:
-            print("You like a wide variety of actors! We need more data to determine your favorite actors.") 
-            exit()
-
-    print("Your favorite actor is " + sorted_actor_tup[0][0] + ". They appeared in " + str(sorted_actor_tup[0][1]) + " of your favorite movies!")    
-    return sorted_actor_tup[0][0]
+    if sorted_actor_tup[0][1] == 1:
+        print("You like a wide variety of actors! We need more data to determine your favorite actors.") 
+        exit()
+    else:
+        print("Your favorite actor is " + sorted_actor_tup[0][0] + ". They appeared in " + str(sorted_actor_tup[0][1]) + " of your favorite movies!")    
+        return sorted_actor_tup[0][0]
 
 #genre_analysis
 def genres(filename):
@@ -192,4 +186,5 @@ def imdb_rating(filename):
     return avg_rating
 
 #Running functions
-plot('film_data.db')
+#year, runtime, director, actors, genres, plot, imdb_rating
+imdb_rating('film_data.db')
